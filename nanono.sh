@@ -12,7 +12,7 @@
 #   DEFAULTS
 #
 
-readonly _nanono_ver='0.1.0'
+readonly _nanono_ver='0.2.0'
 
 
 #
@@ -33,6 +33,7 @@ help_message() {
   echo 'Options:'
   echo '  -h, --help              Show this help and exit.'
   echo '  -V, --version           Show version number and exit.'
+  echo '  -b, --battery           Show battery capacity (in percents).'
   echo '  -p, --packages          Show number of updated packages.'
 
 }
@@ -57,6 +58,10 @@ default_message() {
   # Returns:
   #     String message to standard output.
   #
+  get_battery
+  battery=$?
+  printf " -> battery has %s%% capacity\n" ${battery}
+
   get_packages
   packages=$?
   printf " -> %s packages need to be updated\n" ${packages}
@@ -67,6 +72,17 @@ default_message() {
 #
 #   FUNCTIONS
 #
+
+get_battery() {
+  #
+  # Get battery capacity (in percents).
+  #
+  # Returns:
+  #     An integer with battery capacity (in percents).
+  #
+  capacity="$(cat /sys/class/power_supply/BAT0/capacity)"
+  return ${capacity}
+}
 
 get_packages() {
   #
@@ -105,6 +121,11 @@ parse_args() {
         -V|--version)
           version_message
           exit 0
+        ;;
+
+        -b|--battery)
+          get_battery
+          echo "$?"
         ;;
 
         -p|--packages)

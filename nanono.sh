@@ -34,6 +34,7 @@ help_message() {
   echo '  -h, --help              Show this help and exit.'
   echo '  -V, --version           Show version number and exit.'
   echo '  -b, --battery           Show battery capacity (in percents).'
+  echo '      --battery-time      Show time to battery discharge.'
   echo '  -p, --packages          Show number of updated packages.'
 
 }
@@ -80,8 +81,31 @@ get_battery() {
   # Returns:
   #     An integer with battery capacity (in percents).
   #
-  capacity="$(cat /sys/class/power_supply/BAT0/capacity)"
-  return ${capacity}
+  bat_capacity="$(cat /sys/class/power_supply/BAT0/capacity)"
+  return ${bat_capacity}
+}
+
+get_battery_time() {
+  #
+  # Get time to discharge battery.
+  #
+  # Returns:
+  #     String message to standard output with time to discharge
+  #     in format "h:mm" or return 1 if fully charged.
+  #
+  bat_power="$(cat /sys/class/power_supply/BAT0/power_now)"   # in uW
+  bat_energy="$(cat /sys/class/power_supply/BAT0/energy_now)" # in uWh
+
+  if [ ${bat_power} -eq 0 ]; then
+    return 1
+
+  else
+    hours=$(( ${bat_energy} / ${bat_power} ))
+    minutes=$(( (${bat_energy} - ${hours}*${bat_power})*60 / ${bat_power} ))
+
+    printf "%01d:%02d\n" ${hours} ${minutes}
+
+  fi
 }
 
 get_packages() {
@@ -126,11 +150,18 @@ parse_args() {
         -b|--battery)
           get_battery
           echo "$?"
+          exit 0
+        ;;
+
+        --battery-time)
+          get_battery_time
+          exit 0
         ;;
 
         -p|--packages)
           get_packages
           echo "$?"
+          exit 0
         ;;
 
         -*)

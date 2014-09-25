@@ -54,7 +54,7 @@ version_message() {
 
 default_message() {
   #
-  # Shows percent message.
+  # Shows default message.
   #
   # Returns:
   #     String message to standard output.

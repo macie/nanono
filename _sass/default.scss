@@ -1,0 +1,114 @@
+@import "base";
+
+@include global-reset;
+@include establish-baseline;
+
+
+a {
+	text-decoration: none;
+	
+	&:hover, &:link, &:active, &:visited {
+		color: $color-black;
+	}
+}
+
+
+body{
+	color: $color-black;
+	font-family: 'Muli', 'Arial', sans-serif;
+
+
+	header {
+		@include container($page-width);
+
+		h1 {
+			margin: 0.8em auto 0;
+			width: 5em;
+			
+			@include adjust-font-size-to(3.8em);
+			text-align: center;
+
+			a:before {
+				margin: 0 auto;
+				content:url('/images/logo.png');
+			}
+		}
+
+		h2 {
+			@include rhythm(0, 0, 4, 0, 2em);
+
+			margin: 0 auto;
+
+			text-align: center;
+		}
+	}
+
+	section {
+		@include clearfix;
+		@include container($page-width);
+
+		article {
+			@include clearfix;
+
+			h1 {
+				@include rhythm(2, 1, 1, 1, 2em);
+				@include adjust-font-size-to(2em);
+				margin-left: span(1) + gutter();
+			}
+
+			p, ul {
+				@include rhythm(0, 0, 0, 2, 1.2em);
+				@include adjust-font-size-to(1.2em);
+
+				@include span(8 of 12);
+				margin-left: span(2) + gutter();
+			}
+
+			li:before {
+				content: '✲';
+				margin-left: -1.3em;
+				margin-right: 0.4em;
+			}
+
+			a {
+				@include border-radius(0.3em, 0.3em);
+				background-color: $color-green;
+				padding: 0.2em 0.3em 0.2em;
+
+				font-weight: bold;
+
+				&:link, &:visited {
+					color: $color-white;
+				}
+			}
+
+			code {
+				@include border-radius(0.2em, 0.3em);
+				border: 1px solid $color-gray;
+				padding: 0.3em 0.8em 0.3em 0.6em;
+				@include adjust-font-size-to(1.2em);
+
+				font-family: monospace;
+			}
+
+
+		}
+
+	}
+
+	footer {
+		@include clearfix;
+		@include container($page-width);
+		@include rhythm(1, 1, 0, 1, 1em);
+
+		color: $color-gray;
+		font-weight: bold;
+
+		p {
+			margin-left: span(1) + gutter();
+
+
+		}
+
+	}
+}

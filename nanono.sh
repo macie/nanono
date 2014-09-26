@@ -12,7 +12,7 @@
 #   DEFAULTS
 #
 
-readonly _nanono_ver='0.2.0'
+readonly _nanono_ver='0.?.0'
 
 
 #
@@ -35,6 +35,8 @@ help_message() {
   echo '  -V, --version           Show version number and exit.'
   echo '  -b, --battery           Show battery capacity (in percents).'
   echo '      --battery-time      Show time to battery discharge.'
+  echo '  -w, --wifi              Show wifi power (in percents)'
+  echo '      --wifi-name         Show name of connected AP.'
   echo '  -p, --packages          Show number of updated packages.'
 
 }
@@ -62,6 +64,10 @@ default_message() {
   get_battery
   battery=$?
   printf " -> battery has %s%% capacity\n" ${battery}
+
+  get_wifi
+  wifi_power=$?
+  printf " -> connected wifi has %s%% signal power\n" ${wifi_power}
 
   get_packages
   packages=$?
@@ -106,6 +112,42 @@ get_battery_time() {
     printf "%01d:%02d\n" ${hours} ${minutes}
 
   fi
+}
+
+get_wifi() {
+  #
+  # Get wifi signal power (in percents).
+  #
+  # Linear approximation with boundary conditions:
+  #   100% for signal > -35 dBm
+  #     0% for signal < -95 dBm
+  #
+  # Returns:
+  #     An integer with wifi signal power (in percents).
+  #
+  wifi_power=$(iw dev wls3 link | awk "/signal:/ {print \$2}")
+  if [ ${wifi_power} -lt "-95" ]; then
+    wifi_percent="0"
+  
+  elif [ ${wifi_power} -gt "-35" ]; then
+    wifi_percent="100"
+  
+  else
+    wifi_percent=$(( 5 * (${wifi_power} + 95) / 3 ))
+
+  fi
+  return "${wifi_percent}"
+}
+
+get_wifi_name() {
+  #
+  # Get name of connected Access Point.
+  #
+  # Returns:
+  #     String message to standard output with Access Point name.
+  #
+  wifi_name=$(iw dev wls3 link | awk "/SSID:/ {print \$2}")
+  printf "%s\n" ${wifi_name}
 }
 
 get_packages() {
@@ -155,6 +197,17 @@ parse_args() {
 
         --battery-time)
           get_battery_time
+          exit 0
+        ;;
+
+        -w|--wifi)
+          get_wifi
+          echo "$?"
+          exit 0
+        ;;
+
+        --wifi-name)
+          get_wifi_name
           exit 0
         ;;
 

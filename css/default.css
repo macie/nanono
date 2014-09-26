@@ -172,7 +172,7 @@ body header h1 {
 /* line 31, ../_sass/default.scss */
 body header h1 a:before {
   margin: 0 auto;
-  content: url("/images/logo.png");
+  content: url("../images/logo.png");
 }
 /* line 37, ../_sass/default.scss */
 body header h2 {

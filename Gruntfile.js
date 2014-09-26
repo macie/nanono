@@ -52,10 +52,6 @@ module.exports = function(grunt) {
                     '*.html'
                 ],
                 tasks: ['exec:jekyll_build']
-            },
-            img: {
-                files: 'img/**/*.*',
-                tasks: ['imageoptim']
             }
         },
 
@@ -70,21 +66,6 @@ module.exports = function(grunt) {
             jekyll_doctor: {
                 command: 'bundle exec jekyll doctor'
             }
-        },
-
-        // grunt-imageoptim
-        imageoptim: {
-            options: {
-                quitAfter: true
-            },
-            images: {
-                files: [{
-                    expand: true,
-                    cwd: 'img/',
-                    src: ['**/*.{png,jpg,gif}'],
-                    dest: 'img/'
-                }]
-            }
         }
     });
 
@@ -92,7 +73,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-exec');
-    grunt.loadNpmTasks('grunt-imageoptim');
 
     // default
     grunt.registerTask('default', [

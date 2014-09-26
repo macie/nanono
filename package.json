@@ -1,9 +1,9 @@
 {
     "name": "nanono-website",
     "version": "1.0.0",
-    "homepage": "http://macie.github.io/nanono",
+    "homepage": "https://macie.github.io/nanono",
     "issues": {
-        "url": "http://github.com/macie/nanono/issues"
+        "url": "https://github.com/macie/nanono/issues"
     },
     "repository": {
         "type": "git",
@@ -13,12 +13,10 @@
     },
     "devDependencies": {
         "grunt": "~0.4.1",
-        "grunt-contrib-concat": "~0.4.0",
         "grunt-contrib-connect": "~0.8.0",
         "grunt-contrib-cssmin": "~0.10.0",
         "grunt-contrib-watch": "~0.6.0",
-        "grunt-exec": "~0.4.5",
-        "grunt-imageoptim": "~1.4.1"
+        "grunt-exec": "~0.4.5"
     },
     "scripts": {
         "test": "grunt test"

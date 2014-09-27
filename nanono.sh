@@ -12,7 +12,7 @@
 #   DEFAULTS
 #
 
-readonly _nanono_ver='0.2.0'
+readonly _nanono_ver='0.3.0'
 
 
 #
@@ -33,8 +33,9 @@ help_message() {
   echo 'Options:'
   echo '  -h, --help              Show this help and exit.'
   echo '  -V, --version           Show version number and exit.'
-  echo '  -b, --battery           Show battery capacity (in percents).'
+  echo '  -b, --battery           Show battery capacity (in %).'
   echo '      --battery-time      Show time to battery discharge.'
+  echo '  -d, --disk-free <dir>   Show free space on disk partiotion (in %).'
   echo '  -p, --packages          Show number of updated packages.'
 
 }
@@ -63,10 +64,17 @@ default_message() {
   battery=$?
   printf " -> battery has %s%% capacity\n" ${battery}
 
+  get_disk_free "/"
+  disk_free_space=$?
+  printf " -> root partition has %s%% free space\n" ${disk_free_space}
+
+  get_disk_free "/home"
+  disk_free_space=$?
+  printf " -> home partition has %s%% free space\n" ${disk_free_space}
+
   get_packages
   packages=$?
   printf " -> %s packages need to be updated\n" ${packages}
-
 }
 
 
@@ -106,6 +114,21 @@ get_battery_time() {
     printf "%01d:%02d\n" ${hours} ${minutes}
 
   fi
+}
+
+get_disk_free() {
+  #
+  # Get disk partition free space (in percents).
+  #
+  # Arguments:
+  #     dir (str) - Directory on partition to check.
+  #
+  # Returns:
+  #     An integer with disk partition free space (in percents).
+  #
+  dir_name="$@"
+  disk_usage=$( df ${dir_name} | awk 'FNR == 2 { gsub("%", ""); print $5 }' )
+  return $(( 100 - ${disk_usage} ))
 }
 
 get_packages() {
@@ -156,6 +179,18 @@ parse_args() {
         --battery-time)
           get_battery_time
           exit 0
+        ;;
+
+        -d|--disk-usage)
+          if [ "${arg_num}" -gt 1 ]; then
+            get_disk_free "$2"
+            echo "$?"
+            exit 0
+          else
+            echo "nanono: no directory specified" 1>&2
+            echo "Try '-h' or '--help' for more information." 1>&2
+            exit 64 # command line usage error (via /usr/include/sysexits.h)
+          fi
         ;;
 
         -p|--packages)

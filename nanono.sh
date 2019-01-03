@@ -4,7 +4,7 @@
 #
 # https://github.com/macie/nanono
 #
-# Copyright (c) 2014 Maciej Żok <maciek.zok@gmail.com>
+# Copyright (c) 2014-2019 Maciej Żok
 # MIT License (http://opensource.org/licenses/MIT)
 
 
@@ -12,7 +12,7 @@
 #   DEFAULTS
 #
 
-readonly _nanono_ver='0.3.0'
+readonly _nanono_ver='0.3.1'
 
 
 #
@@ -49,7 +49,7 @@ version_message() {
   #
   echo "nanono ${_nanono_ver}"
   echo
-  echo 'Copyright (c) 2014 Maciej Żok'
+  echo 'Copyright (c) 2014-2019 Maciej Żok'
   echo 'MIT License (http://opensource.org/licenses/MIT)'
 }
 
@@ -90,7 +90,7 @@ get_battery() {
   #     An integer with battery capacity (in percents).
   #
   bat_capacity="$(cat /sys/class/power_supply/BAT0/capacity)"
-  return ${bat_capacity}
+  return "${bat_capacity}"
 }
 
 get_battery_time() {
@@ -104,12 +104,12 @@ get_battery_time() {
   bat_power="$(cat /sys/class/power_supply/BAT0/power_now)"   # in uW
   bat_energy="$(cat /sys/class/power_supply/BAT0/energy_now)" # in uWh
 
-  if [ ${bat_power} -eq 0 ]; then
+  if [ "${bat_power}" -eq 0 ]; then
     return 1
 
   else
-    hours=$(( ${bat_energy} / ${bat_power} ))
-    minutes=$(( (${bat_energy} - ${hours}*${bat_power})*60 / ${bat_power} ))
+    hours=$(( bat_energy / bat_power ))
+    minutes=$(( (bat_energy - hours * bat_power) * 60 / bat_power ))
 
     printf "%01d:%02d\n" ${hours} ${minutes}
 
@@ -126,9 +126,9 @@ get_disk_free() {
   # Returns:
   #     An integer with disk partition free space (in percents).
   #
-  dir_name="$@"
-  disk_usage=$( df ${dir_name} | awk 'FNR == 2 { gsub("%", ""); print $5 }' )
-  return $(( 100 - ${disk_usage} ))
+  dir_name="$*"
+  disk_usage=$( df "${dir_name}" | awk 'FNR == 2 { gsub("%", ""); print $5 }' )
+  return $(( 100 - disk_usage ))
 }
 
 get_packages() {
@@ -139,7 +139,7 @@ get_packages() {
   #     An integer with number of updated packages.
   #
   packages=$( checkupdates | wc -l )
-  return ${packages}
+  return "${packages}"
 }
 
 parse_args() {
@@ -206,7 +206,7 @@ parse_args() {
         ;;
       esac
 
-      arg_num=$(( ${arg_num} - 1 ))
+      arg_num=$(( arg_num - 1 ))
     done
   fi
 }

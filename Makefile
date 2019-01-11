@@ -1,17 +1,18 @@
 
-TESTS_DIR="./test"
-ASSERT="${TESTS_DIR}/assert.sh"
-STUB="${TESTS_DIR}/stub.sh"
+TESTS_DIR := ./test
+BIN_DIR := ${TESTS_DIR}/.bin
+ASSERT := ${BIN_DIR}/assert.sh
+STUB := ${BIN_DIR}/stub.sh
 
 clean:
-	echo "Remove all"
+	@echo "Remove all"
 
-dev-dependencies:
-	echo "Install dependencies"
-	curl -sS -L 'https://raw.githubusercontent.com/lehmannro/assert.sh/master/assert.sh' > ${ASSERT}
-	curl -sS -L 'https://raw.githubusercontent.com/jimeh/stub.sh/master/stub.sh' > ${STUB}
+prepare:
+	if ! [ -d "${BIN_DIR}" ]; then mkdir -p "${BIN_DIR}"; fi
+	curl -sS -L 'https://raw.githubusercontent.com/lehmannro/assert.sh/master/assert.sh' > "${ASSERT}"
+	curl -sS -L 'https://raw.githubusercontent.com/jimeh/stub.sh/master/stub.sh' > "${STUB}"
 
-test:
-	echo "Run tests"
+test: prepare
+	@echo "Run tests"
 
-.PHONY:	clean dev-dependencies test
+.PHONY:	clean prepare test

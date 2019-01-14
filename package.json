@@ -1,0 +1,7 @@
+{
+    "name": "nanono",
+    "version": "0.3.1",
+    "description": "Nano notifications for Linux",
+    "scripts": [ "nanono.sh" ],
+    "install": "make install"
+  }
